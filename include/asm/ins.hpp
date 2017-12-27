@@ -4,19 +4,33 @@
 #include "utils.hpp"
 
 #define DEFINSTR(S) \
-  template <class... C> struct S{ static_assert(false && sizeof...(C), "invalid "#S); }
+  template <class... C> struct S { static_assert(false && sizeof...(C), "invalid "#S); }
 
 namespace Asm
 {
   namespace Ins
   {
-    // TODO
+    // ConstBase is for expressions that cannot be changed at runtime
+    struct ConstBase
+    {
+      template <class C>
+      static constexpr inline void copy(uint8_t *, C&){}
+      static constexpr bool r = false;
+    };
+
+    // Base is a helper for expressions that can be changed a runtime NOTE : need to implement copy
+    struct Base
+    {
+      static constexpr bool r = true;
+    };
   }
   // mov
   DEFINSTR(mov);
   template <auto Imm, uint8_t Reg, class ImmT> struct mov<Imm::imm<32, ImmT, Imm>, Reg::reg<32, Reg>>{
     using Imm_ = typename Imm::imm<32, ImmT, Imm>::type;
     using b = utils::bits<0b10111000 | Reg, Imm_::b[0], Imm_::b[1], Imm_::b[2], Imm_::b[3]>;
+
+    static constexpr bool r = Imm_::r;
 
     template <class T>
     static inline void copy(uint8_t *dst, T& t) {
@@ -32,10 +46,10 @@ namespace Asm
 
   // ret
   DEFINSTR(ret);
-  template <> struct ret<>{
-    using b = utils::bits<0b11000011>;
-    static constexpr bool r = false;
-    template <class T> static inline void copy(uint8_t*, const T&){};
-  };
+  template <> struct ret<> : Ins::ConstBase { using b = utils::bits<0b11000011>; };
+
+  // dec
+  DEFINSTR(dec);
+  template <uint8_t Reg> struct dec<Reg::reg<32, Reg>> : Ins::ConstBase { using b = utils::bits<0b11111111, 0b11001000 | Reg>; };
 
 }

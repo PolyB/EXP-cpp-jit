@@ -12,6 +12,7 @@ using namespace Asm;
 
 using Prgm = Asm::program<
               mov<imm<&vars::ret>, EAX>,
+              dec<EAX>,
               ret<>
               >;
 
@@ -25,10 +26,9 @@ int main()
 
 
   Prgm::remplace(p.data(), vars{ .ret = 1337 });
-
-  assert(f() == 1337);
+  assert(f() == 1336);
 
   Prgm::remplace(p.data(), vars{ .ret = 1338 });
 
-  assert(f() == 1338);
+  assert(f() == 1337);
 }
