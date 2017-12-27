@@ -52,4 +52,21 @@ namespace Asm
   DEFINSTR(dec);
   template <uint8_t Reg> struct dec<Reg::reg<32, Reg>> : Ins::ConstBase { using b = utils::bits<0b11111111, 0b11001000 | Reg>; };
 
+  // push
+  DEFINSTR(push);
+  template <uint8_t Reg> struct push<Reg::reg<32, Reg>> : Ins::ConstBase { using b = utils::bits<0b01010000 | Reg>; };
+
+  // pop
+  DEFINSTR(pop);
+  template <uint8_t Reg> struct pop<Reg::reg<32, Reg>> : Ins::ConstBase { using b = utils::bits<0b01011000 | Reg>; };
+
+  // nop
+  DEFINSTR(nop);
+  template <> struct nop<> : Ins::ConstBase { using b = utils::bits<0b10010000>; };
+
+  // add
+  DEFINSTR(add);
+  template <uint8_t Reg1, uint8_t Reg2> struct add<Reg::reg<32, Reg1>, Reg::reg<32, Reg2>> : Ins::ConstBase { using b = utils::bits<0b00000001, 0b11000000 | (Reg1 << 3) | (Reg2)>; };
+
+
 }
