@@ -22,7 +22,7 @@ namespace Asm
     static inline void copy(uint8_t *dst, T& t) {
       if constexpr (Imm_::template dep<T>::value)
       {
-        dst[1] = Imm_::template  get<0>(t);
+        dst[1] = Imm_::template get<0>(t);
         dst[2] = Imm_::template get<1>(t);
         dst[3] = Imm_::template get<2>(t);
         dst[4] = Imm_::template get<3>(t);
@@ -34,6 +34,7 @@ namespace Asm
   DEFINSTR(ret);
   template <> struct ret<>{
     using b = utils::bits<0b11000011>;
+    static constexpr bool r = false;
     template <class T> static inline void copy(uint8_t*, const T&){};
   };
 

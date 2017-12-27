@@ -1,5 +1,7 @@
 #include "../include/asm/program.hpp"
+#include "../include/asm/page/page.hpp"
 #include <iostream>
+#include <cassert>
 
 struct vars
 {
@@ -15,15 +17,18 @@ using Prgm = Asm::program<
 
 int main()
 {
-  std::array<uint8_t, Prgm::size> s{};
-  Prgm::copyTo(s.data());
-  std::cout << std::hex;
-  for (uint8_t i : s)
-    std::cout << (int)i << ' ';
-  std::cout << std::endl;
-  Prgm::remplace(s.data(),
-                  vars{ .ret = 0xFFFF });
-  for (uint8_t i : s)
-    std::cout << (int)i << ' ';
-  std::cout << std::endl;
+  Page::Page p;
+
+  Prgm::copyTo(p.data());
+
+  int (*f)() = reinterpret_cast<int(*)()>(p.data());
+
+
+  Prgm::remplace(p.data(), vars{ .ret = 1337 });
+
+  assert(f() == 1337);
+
+  Prgm::remplace(p.data(), vars{ .ret = 1338 });
+
+  assert(f() == 1338);
 }
