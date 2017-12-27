@@ -43,6 +43,7 @@ namespace Asm
       }
     }
   };
+  template <uint8_t Reg1, uint8_t Reg2> struct mov<Reg::reg<32, Reg1>, Reg::reg<32, Reg2>> : Ins::ConstBase { using b = utils::bits<0b10001001, 0b11000000 | (Reg1 << 3) | (Reg2)>; }; // TODO : find the difference (like add)
 
   // ret
   DEFINSTR(ret);
@@ -66,7 +67,7 @@ namespace Asm
 
   // add
   DEFINSTR(add);
-  template <uint8_t Reg1, uint8_t Reg2> struct add<Reg::reg<32, Reg1>, Reg::reg<32, Reg2>> : Ins::ConstBase { using b = utils::bits<0b00000001, 0b11000000 | (Reg1 << 3) | (Reg2)>; };
+  template <uint8_t Reg1, uint8_t Reg2> struct add<Reg::reg<32, Reg1>, Reg::reg<32, Reg2>> : Ins::ConstBase { using b = utils::bits<0b00000001, 0b11000000 | (Reg1 << 3) | (Reg2)>; }; // TODO : find the difference between 0b00000001 and 0b00000011
 
 
 }
