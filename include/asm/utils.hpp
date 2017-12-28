@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <array>
+#include <iostream>
 
 namespace Asm
 {
@@ -10,6 +11,12 @@ namespace utils
   template<uint8_t...B>
   struct bits{
     static constexpr size_t size = sizeof...(B);
+    static void print(std::ostream& os)
+    {
+      os << std::hex;
+      int unused[] = {(os << (int)B << ' ', 0)...};
+      (void)unused;
+    }
   };
 
   template <class...> struct tl{};
@@ -56,6 +63,10 @@ namespace utils
   template <> struct smartsizeof<int64_t> { static constexpr uint8_t size = 8; };
   // ignore the case when returning a pointer to member function
   template <class C, class R> struct smartsizeof<R (C::*)> { static constexpr uint8_t size = smartsizeof<R>::size; };
+  // size of a pointer
+  template <class C> struct smartsizeof<C*> { static constexpr uint8_t size = 8; };
+  // size of a pointer to fun (don't know why clang don't match a ptr)
+  template <class C, class... Args> struct smartsizeof<C(*)(Args...)> { static constexpr uint8_t size = sizeof (C*); };
 
 
   template <class C> struct make_unsigned{};
@@ -69,6 +80,8 @@ namespace utils
   template <> struct make_unsigned<int32_t>   { using type = uint32_t; };
   template <> struct make_unsigned<int64_t>   { using type = uint64_t; };
   template <class C, class R> struct make_unsigned<R (C::*)>   { using type = typename make_unsigned<R>::type (C::*); };
+  // a ptr is a uint64_t
+  template <class C> struct make_unsigned<C*> { using type = uint64_t; };
 
 }
 }

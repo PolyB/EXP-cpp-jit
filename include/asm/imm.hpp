@@ -45,6 +45,16 @@ namespace Asm
     {
       using type = ImmDynamicImpl<C, uint32_t, I>;
     };
+    template <class C, uint64_t (C::*I)>
+    struct imm<64, uint64_t (C::*), I>
+    {
+      using type = ImmDynamicImpl<C, uint64_t, I>;
+    };
+    template <uint64_t I>
+    struct imm<64, uint64_t, I>
+    {
+      using type = ImmStaticImpl<uint64_t, I>;
+    };
   }
 
   template<auto O>

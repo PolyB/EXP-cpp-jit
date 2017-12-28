@@ -20,5 +20,11 @@ namespace Asm
       char unused[] = { (C::copy(ptr, t), ptr += C::b::size, '\0')... };
       (void)unused;
     }
+
+    static inline void debug(std::ostream& os)
+    {
+      char unused[] = { (C::b::print(os), os << typeid(C).name() << std::endl, '\0')... };
+      (void)unused;
+    }
   };
 }
