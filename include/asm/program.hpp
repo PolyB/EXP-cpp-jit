@@ -16,7 +16,8 @@ namespace Asm
     template <class T>
     static void inline remplace(void * dst, T t)
     {
-      char unused[] = { (C::copy((uint8_t *)dst, t), '\0')... };
+      uint8_t *ptr = reinterpret_cast<uint8_t*>(dst);
+      char unused[] = { (C::copy(ptr, t), ptr += C::b::size, '\0')... };
       (void)unused;
     }
   };
