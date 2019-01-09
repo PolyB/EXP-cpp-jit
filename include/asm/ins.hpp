@@ -48,7 +48,6 @@ namespace Asm
   template <auto Imm, uint8_t Reg, class ImmT> struct mov<Imm::imm<64, ImmT, Imm>, Reg::reg<64, Reg>>{
     using Imm_ = typename Imm::imm<64, ImmT, Imm>::type;
     using b = utils::bits<0b01001001, 0b10111000 | Reg, Imm_::b[0], Imm_::b[1], Imm_::b[2], Imm_::b[3], Imm_::b[4], Imm_::b[5], Imm_::b[6], Imm_::b[7]>;
-    static constexpr bool r = Imm_::r;
 
     template <class T>
     static inline void copy(uint8_t *dst, T& t) {
@@ -77,6 +76,17 @@ namespace Asm
   // push
   DEFINSTR(push);
   template <uint8_t Reg> struct push<Reg::reg<32, Reg>> : Ins::ConstBase { using b = utils::bits<0b01010000 | Reg>; };
+  template <uint8_t I, class ImmT> struct push<Imm::imm<8, ImmT, I>> : Ins::Base {
+    using Imm_ = typename Imm::imm<8, ImmT, I>::type;
+    using b = utils::bits<0b01101010, I>;
+
+    template <class T>
+    static inline void copt(uint8_t *dst, T& t) {
+      if constexpr (Imm_::template dep<T>::value)
+        dst[1] = Imm_::template get<0>();
+    }
+
+  };
 
   // pop
   DEFINSTR(pop);

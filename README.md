@@ -1,3 +1,10 @@
+# cpp-jit
+Building jitted code at compile-time with c++ templates (Proof of Concept).
+
+
+## exemple
+
+```cpp
 #include "../include/asm/program.hpp"
 #include "../include/asm/page/page.hpp"
 #include <cassert>
@@ -35,3 +42,12 @@ int main()
 
   assert(f() == 1338 + 12);
 }
+```
+
+## test
+This code can be tested with
+```sh
+cd test
+make t1
+./t1
+```

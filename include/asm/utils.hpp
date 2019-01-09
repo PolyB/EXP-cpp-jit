@@ -82,6 +82,5 @@ namespace utils
   template <class C, class R> struct make_unsigned<R (C::*)>   { using type = typename make_unsigned<R>::type (C::*); };
   // a ptr is a uint64_t
   template <class C> struct make_unsigned<C*> { using type = uint64_t; };
-
-}
-}
+} // namespace utils
+} // namespace Asm
